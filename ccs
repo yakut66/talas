@@ -1,0 +1,64 @@
+#define LCD_ENABLE_PIN PIN_B0
+#define LCD_RS_PIN PIN_B1
+#define LCD_RW_PIN PIN_B2
+#define LCD_DATA4 PIN_B4
+#define LCD_DATA5 PIN_B5
+#define LCD_DATA6 PIN_B6
+#define LCD_DATA7 PIN_B7
+#include <lcd.c>
+#use rs232(baud=9600, xmit=PIN_C6, rcv=PIN_c7,stream=ornek)
+ 
+void main()                                   // main function
+{  set_tris_b(0x00);
+   char islem;
+   lcd_init();
+   //output_c(0x00);
+   printf(lcd_putc,"....Hello world....\r\n");// printf function included in the RS232 library
+   delay_ms(500);
+   printf(lcd_putc,"\r\nNe islem yap ist>\r");
+ while(TRUE)
+ { 
+   islem=getc(); // Seri port üzerinden gelen karakter islem değişkenine aktarılıyor
+   lcd_putc(islem); // RS232 üzerinden klavye'den girilen karakteri ekrana gönder.
+   if(islem=='A'|| islem=='a')
+   {
+   printf(lcd_putc,'\f');
+   setup_port_a( ALL_ANALOG );                 // A/D setup functions- built-in
+   setup_adc( ADC_CLOCK_INTERNAL );            // Internal clock always works
+   set_adc_channel( 0 );                       // Set channel to AN0 
+   setup_psp(PSP_DISABLED); // PSP birimi devre disiışı
+   setup_timer_1(T1_DISABLED); // T1 zamanla
+   setup_timer_2(T2_DISABLED,0,1); // T2 zamanlayici devre disiı
+   setup_adc_ports(NO_ANALOGS); // ANALOG girisş yok
+   setup_adc(ADC_OFF); // ADC birimi devre disi
+   setup_CCP1(CCP_OFF); // CCP1 birimi devre disi
+   setup_CCP2(CCP_OFF); // CCP2 birimi devre disi
+  }
+   else if (islem=='R'|| islem=='r') //Saga dondurme islemi secildiyse
+  {
+   delay_ms(300);
+   printf(lcd_putc,"\r\n..lambalar yaniyor..");
+   putchar(ornek);
+   //printf(lcd_putc,'\f');
+   printf("\n..karakteri");
+   output_high(pin_c1);//output_c(0x01);
+   delay_ms(500);
+   output_low(pin_c1);//output_c(0x02); 
+   delay_ms(500);
+  
+  islem=' '; // islem değişkeninin içeriğini boş olarak ayarla 
+  }
+  else 
+  
+   if (kbhit()) break; //Seri portan bir veri alindi ise donguden cik
+ 
+   printf("\n************************************************");
+   printf("\n\r led kontrol ");
+   printf("\n\r************************************************");
+   printf("\n\n");
+   printf("\n\r...Islem Seciniz:\n");
+   printf("\n\r------------------------------------------------");
+   //printf("\n\r------------------------------------------------");
+         
+   }
+}
